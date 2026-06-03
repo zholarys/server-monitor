@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  monitor:
+    build: .
+    container_name: server-monitor
+    restart: unless-stopped
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+      CHAT_ID: ${CHAT_ID}
+      CHECK_INTERVAL: 60
+      CPU_THRESHOLD: 80
+      RAM_THRESHOLD: 85
+      DISK_THRESHOLD: 90
