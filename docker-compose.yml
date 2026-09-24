@@ -1,13 +1,25 @@
-version: "3.9"
 services:
   monitor:
     build: .
-    container_name: server-monitor
     restart: unless-stopped
     environment:
-      BOT_TOKEN: ${BOT_TOKEN}
-      CHAT_ID: ${CHAT_ID}
+      BOT_TOKEN: ${BOT_TOKEN:?Set BOT_TOKEN in .env}
+      CHAT_ID: ${CHAT_ID:?Set CHAT_ID in .env}
       CHECK_INTERVAL: 60
+      ALERT_COOLDOWN: 900
       CPU_THRESHOLD: 80
       RAM_THRESHOLD: 85
       DISK_THRESHOLD: 90
+      PROCFS_PATH: /host/proc
+      DISK_PATH: /host/rootfs
+    volumes:
+      - /proc:/host/proc:ro
+      - /:/host/rootfs:ro,rslave
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
